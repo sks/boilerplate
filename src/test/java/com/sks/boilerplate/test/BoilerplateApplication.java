@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.sks.boilerplate.config.DefaultConfiguration;
 import com.sks.boilerplate.repository.CustomRepositoryImpl;
-import com.sks.boilerplate.test.repository.SampleBaseRepository;
+import com.sks.boilerplate.test.repository.PersonRepository;
 
 @SpringBootApplication
 @Import(value = { DefaultConfiguration.class })
-@EnableJpaRepositories(basePackageClasses = SampleBaseRepository.class, repositoryBaseClass = CustomRepositoryImpl.class)
+@EnableJpaRepositories(basePackageClasses = PersonRepository.class, repositoryBaseClass = CustomRepositoryImpl.class)
 public class BoilerplateApplication {
 
 	public static void main(String[] args) {

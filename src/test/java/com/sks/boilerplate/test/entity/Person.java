@@ -21,9 +21,9 @@ import lombok.NonNull;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-public class SampleBaseEntity extends BaseEntity<Long> {
+public class Person extends BaseEntity<Long> {
 
-	public SampleBaseEntity(@NonNull String name, @NonNull String gender) {
+	public Person(@NonNull String name, @NonNull String gender) {
 		this.name = name;
 		this.gender = gender;
 	}

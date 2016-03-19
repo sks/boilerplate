@@ -4,10 +4,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sks.boilerplate.controller.GenericRestController;
-import com.sks.boilerplate.test.entity.SampleBaseEntity;
+import com.sks.boilerplate.test.entity.Person;
 
 @RestController
-@RequestMapping(value = "/sample")
-public class SampleBaseController extends GenericRestController<SampleBaseEntity, Long> {
+@RequestMapping(value = "/person")
+public class PersonController extends GenericRestController<Person, Long> {
 
 }

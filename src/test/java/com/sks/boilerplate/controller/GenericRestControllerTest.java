@@ -22,20 +22,20 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.google.common.collect.Lists;
 import com.sks.boilerplate.WebIntegrationTesting;
-import com.sks.boilerplate.test.entity.SampleBaseEntity;
-import com.sks.boilerplate.test.repository.SampleBaseRepository;
+import com.sks.boilerplate.test.entity.Person;
+import com.sks.boilerplate.test.repository.PersonRepository;
 
 @WebAppConfiguration
 public class GenericRestControllerTest extends WebIntegrationTesting {
 
 	@Autowired
-	private SampleBaseRepository sampleBaseRepository;
+	private PersonRepository personRepository;
 
 	@Test
 	public void whenPostingDataThenReturnCreated() throws Exception {
-		this.mockMvc.perform(post("/sample").with(user("user").password("password")).with(csrf())
+		this.mockMvc.perform(post("/person").with(user("user").password("password")).with(csrf())
 				.content("{\"name\": \"some_name\",\"gender\" : \"F\"}")).andExpect(status().isCreated());
-		List<SampleBaseEntity> allEntities = Lists.newArrayList(this.sampleBaseRepository.findAll());
+		List<Person> allEntities = Lists.newArrayList(this.personRepository.findAll());
 		assertEquals(1, allEntities.size());
 		assertEquals("some_name", allEntities.get(0).getName());
 		assertEquals("F", allEntities.get(0).getGender());
@@ -47,111 +47,122 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 	public void whenCreatingDuplicateEntityThenReturnConflict() throws Exception {
 		this.createdEntityInDB();
 		this.mockMvc
-				.perform(post("/sample").with(user("user").password("password")).with(csrf())
+				.perform(post("/person").with(user("user").password("password")).with(csrf())
 						.content("{\"name\": \"name\", \"gender\" : \"F\"}"))
 				.andExpect(status().isConflict()).andExpect(jsonPath("$.logref").exists())
 				.andExpect(jsonPath("$.message").exists()).andExpect(jsonPath("$.links").exists())
 				.andExpect(jsonPath("$.data").exists()).andExpect(jsonPath("$.data.name").value("name"));
 
 		// With different case
-		this.mockMvc.perform(post("/sample").with(user("user").password("password")).with(csrf())
+		this.mockMvc.perform(post("/person").with(user("user").password("password")).with(csrf())
 				.content("{\"name\": \"NAME\", \"gender\" : \"F\"}")).andExpect(status().isConflict());
-		List<SampleBaseEntity> allEntities = Lists.newArrayList(this.sampleBaseRepository.findAll());
+		List<Person> allEntities = Lists.newArrayList(this.personRepository.findAll());
 		assertEquals(1, allEntities.size());
 	}
 
 	@Test
 	public void whenGettingNonExisingEntityThenReturnNotFound() throws Exception {
-		this.mockMvc.perform(get("/sample/123").with(user("user").password("password")).with(csrf()))
+		this.mockMvc.perform(get("/person/123").with(user("user").password("password")).with(csrf()))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void whenGettingExistingEntityThenReturnEntity() throws Exception {
-		SampleBaseEntity entity = this.createdEntityInDB();
-		this.mockMvc.perform(get("/sample/" + entity.getId()).with(user("user").password("password")).with(csrf()))
+		Person entity = this.createdEntityInDB();
+		this.mockMvc.perform(get("/person/" + entity.getId()).with(user("user").password("password")).with(csrf()))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.name").value("name"))
 				.andExpect(jsonPath("$.createDate").isNumber()).andExpect(jsonPath("$.modifyDate").isNumber());
 	}
 
 	@Test
 	public void whenDeletingExistingEntityThenReturnEntity() throws Exception {
-		SampleBaseEntity entity = this.createdEntityInDB();
-		this.mockMvc.perform(delete("/sample/" + entity.getId()).with(user("user").password("password")).with(csrf()))
+		Person entity = this.createdEntityInDB();
+		this.mockMvc.perform(delete("/person/" + entity.getId()).with(user("user").password("password")).with(csrf()))
 				.andExpect(status().isNoContent());
-		List<SampleBaseEntity> allEntities = Lists.newArrayList(this.sampleBaseRepository.findAll());
+		List<Person> allEntities = Lists.newArrayList(this.personRepository.findAll());
 		assertEquals(0, allEntities.size());
 	}
 
-	private SampleBaseEntity createdEntityInDB() {
-		return this.sampleBaseRepository.save(getSampleEntity(e -> e));
+	private Person createdEntityInDB() {
+		return this.personRepository.save(getPersonEntity(e -> e));
 	}
 
 	@Test
 	public void whenDeletingNonExistingEntityThenReturnNotFound() throws Exception {
-		this.mockMvc.perform(delete("/sample/123").with(user("user").password("password")).with(csrf()))
+		this.mockMvc.perform(delete("/person/123").with(user("user").password("password")).with(csrf()))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void whenGettingAllEntitiesThenReturnList() throws Exception {
-		IntStream.rangeClosed(1, 8).mapToObj(i -> getSampleEntity("name_" + i))
-				.forEach(this.sampleBaseRepository::save);
-		this.mockMvc.perform(get("/sample").with(user("user").password("password"))).andExpect(status().isOk())
+		IntStream.rangeClosed(1, 8).mapToObj(i -> getPersonEntity("name_" + i)).forEach(this.personRepository::save);
+		this.mockMvc.perform(get("/person").with(user("user").password("password"))).andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(8)));
 	}
 
 	@Test
 	public void whenFilteringBasedOnTypeThenReturnFilteredValues() throws Exception {
-		IntStream.rangeClosed(1, 8).mapToObj(i -> getSampleEntity("name_" + i, i % 2 == 0 ? "F" : "M"))
-				.forEach(this.sampleBaseRepository::save);
-		this.mockMvc.perform(get("/sample").with(user("user").password("password")).param("gender", "F"))
+		IntStream.rangeClosed(1, 8).mapToObj(i -> getPersonEntity("name_" + i, i % 2 == 0 ? "F" : "M"))
+				.forEach(this.personRepository::save);
+		this.mockMvc.perform(get("/person").with(user("user").password("password")).param("gender", "F"))
 				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(4)));
 
-		this.mockMvc.perform(get("/sample").with(user("user").password("password")).param("gender", "NON_EXISTING"))
+		this.mockMvc.perform(get("/person").with(user("user").password("password")).param("gender", "NON_EXISTING"))
 				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(0)));
 	}
 
 	@Test
 	public void whenUpdatingNonExistingEntityThenReturnNotFound() throws Exception {
 		this.mockMvc.perform(
-				put("/sample/12").content("{\"name\":\"updated_name\"}").with(user("user").password("password")))
+				put("/person/12").content("{\"name\":\"updated_name\"}").with(user("user").password("password")))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
+	public void whenUpdatingNonUpdatableFieldThenDontUpdateThatField() throws Exception {
+		Person entity = this.createdEntityInDB();
+		this.mockMvc.perform(
+				put("/person/" + entity.getId()).content("{\"gender\":\"M\"}").with(user("user").password("password")))
+				.andExpect(status().isAccepted());
+
+		Person updatedEntity = this.personRepository.findOne(entity.getId());
+		assertEquals("F", updatedEntity.getGender());
+	}
+
+	@Test
 	public void whenUpdatingParticularFieldThenUpdateTheValue() throws Exception {
-		SampleBaseEntity entity = this.createdEntityInDB();
-		this.mockMvc.perform(put("/sample/" + entity.getId()).content("{\"name\":\"updated_name\"}")
+		Person entity = this.createdEntityInDB();
+		this.mockMvc.perform(put("/person/" + entity.getId()).content("{\"name\":\"updated_name\"}")
 				.with(user("user").password("password"))).andExpect(status().isAccepted());
 
-		SampleBaseEntity updatedEntity = this.sampleBaseRepository.findOne(entity.getId());
+		Person updatedEntity = this.personRepository.findOne(entity.getId());
 		assertEquals("updated_name", updatedEntity.getName());
+		assertEquals("F", updatedEntity.getGender());
 	}
 
-	private static SampleBaseEntity getSampleEntity(Function<SampleBaseEntity, SampleBaseEntity> mutator) {
-		return getSampleEntity(mutator, "name");
+	private static Person getPersonEntity(Function<Person, Person> mutator) {
+		return getPersonEntity(mutator, "name");
 	}
 
-	private static SampleBaseEntity getSampleEntity(Function<SampleBaseEntity, SampleBaseEntity> mutator, String name) {
-		return mutator.apply(getSampleEntity(name));
+	private static Person getPersonEntity(Function<Person, Person> mutator, String name) {
+		return mutator.apply(getPersonEntity(name));
 	}
 
-	private static SampleBaseEntity getSampleEntity(String name) {
-		return getSampleEntity(name, "F");
+	private static Person getPersonEntity(String name) {
+		return getPersonEntity(name, "F");
 	}
 
-	private static SampleBaseEntity getSampleEntity(String name, String gender) {
-		return new SampleBaseEntity(name, gender);
+	private static Person getPersonEntity(String name, String gender) {
+		return new Person(name, gender);
 	}
 
 	@Test
 	public void whenCreatingEntityWithoutValidNameThenReturnBadRequest() throws Exception {
-		this.mockMvc.perform(post("/sample").with(user("user").password("password")).with(csrf()))
+		this.mockMvc.perform(post("/person").with(user("user").password("password")).with(csrf()))
 				.andExpect(status().isBadRequest());
 
 		this.mockMvc.perform(
-				post("/sample").with(user("user").password("password")).with(csrf()).content("{\"name\": \"\"}"))
+				post("/person").with(user("user").password("password")).with(csrf()).content("{\"name\": \"\"}"))
 				.andExpect(status().isBadRequest());
 	}
 }
