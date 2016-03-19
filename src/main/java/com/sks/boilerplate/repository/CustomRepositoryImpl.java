@@ -197,17 +197,6 @@ public class CustomRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializa
 		return !(Modifier.isStatic(fieldModifier) || Modifier.isFinal(fieldModifier));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * com.ge.predix.common.repository.PredixCustomRepository#batchDeleteAll()
-	 */
-	@Override
-	public void deleteAllInBatch() {
-		super.deleteAllInBatch();
-	}
-
 	@Override
 	public int updateField(ID id, String field, Object newValue) {
 		this.logger.info("Updating the field " + field + " for the entity " + this.classType + "[" + id + "] to value "
