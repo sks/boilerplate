@@ -1,0 +1,14 @@
+language: java
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
+jdk:
+  - oraclejdk8
+before_script:
+- git config --global http.sslVerify "false"
+script:
+- mvn clean package
+notifications:
+  slack:
+    secure: l7wsiMHW9GnRmPX5QespMxIErJJbiBE6994ZdhrsJIHQWQPnr6Pg7Lf881hZnSOmIr2hLCqdJfT8CdsVOoESXDuunjw7NeQ9VVgoKbpf+Wc64rVTn5T0ZDJfPjFbM8+G77NCnFVkb/uFpXxKm26HcTYhkLyDEzWe9o9b/Pk3BlsyY8SxYCIrk/0GFR7VP7WYTg27FhDwg9Vj/PZFdk8FFWXtTfi2ED0OVYtLcs1lhYxiG21tuYB/xXOc5WvqiH07G/I9buN9bAfzJD7P2A7nkSedUXVhhIZUmTa5XLN9yl7KuNCXsdam7TCTm6tqpuH+FbwzyaQwBuGA6rxHPYl3cnTBtnbGHMGkrOf9WrKNapldT6sG+6s3NFykV6LGYuRg57wATRRBcggW1XG3C8knJW+ZAmD10FNDZBvhm9LYVq3arIp2joXs9CwAg+BtaofU3UxwF97FS80XFxAJYdURDfQSv2HjpIyoASXKpRqB9Bn5vgK2m1WBDw52nmXjumQabkJd30d1OEnvKcDK7pfVkAsFN6CLNuqavbMjBVK+PcleZTA/xXwVehjhGTkZ60ECskfzLjZd5nOggIrVx7lzbuwFh/B1+XRPfAMB1NQW/pbic/6qjQKaZJoumYFR32pk0GoBdWPe7FrCxjycug3KnJQ3ub3u8FnUMwQh4EEhtN0=
