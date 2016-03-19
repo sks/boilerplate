@@ -1,5 +1,7 @@
 package com.sks.boilerplate.exception;
 
+import org.springframework.http.HttpStatus;
+
 import com.sks.boilerplate.enums.ErrorKeys;
 
 import lombok.Getter;
@@ -26,5 +28,9 @@ public class ApplicationException extends RuntimeException {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
+
+	public HttpStatus getStatusCode() {
+		return this.errorKey.getStatus();
+	}
 
 }
