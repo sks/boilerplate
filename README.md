@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/sks/boilerplate.svg?branch=develop)](https://travis-ci.org/sks/boilerplate)
-
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/94f40dd11e3c425493ffd2bec7f7f7e6)](https://www.codacy.com/app/sabithksme/boilerplate)
-
+[![codecov.io](https://codecov.io/github/sks/boilerplate/coverage.svg?branch=develop)](https://codecov.io/github/sks/boilerplate?branch=develop)
 
 ## Spring Boot Boiler Plate Codes
 
