@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.sks.boilerplate.annotations.Filterable;
 import com.sks.boilerplate.entity.BaseEntity;
 
 import lombok.Data;
@@ -21,8 +22,9 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class SampleBaseEntity extends BaseEntity<Long> {
 
-	public SampleBaseEntity(@NonNull String name) {
+	public SampleBaseEntity(@NonNull String name, @NonNull String gender) {
 		this.name = name;
+		this.gender = gender;
 	}
 
 	/**
@@ -34,5 +36,11 @@ public class SampleBaseEntity extends BaseEntity<Long> {
 	@NotNull
 	@NotBlank
 	private String name;
+
+	@Column(name = "gender", updatable = false)
+	@NotNull
+	@Filterable
+	@NotBlank
+	private String gender;
 
 }
