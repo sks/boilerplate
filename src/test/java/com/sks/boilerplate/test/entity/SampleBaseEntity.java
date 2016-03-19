@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.sks.boilerplate.annotations.Filterable;
+import com.sks.boilerplate.annotations.PartialUpdatable;
 import com.sks.boilerplate.entity.BaseEntity;
 
 import lombok.Data;
@@ -34,6 +35,7 @@ public class SampleBaseEntity extends BaseEntity<Long> {
 
 	@Column(name = "name")
 	@NotNull
+	@PartialUpdatable
 	@NotBlank
 	private String name;
 

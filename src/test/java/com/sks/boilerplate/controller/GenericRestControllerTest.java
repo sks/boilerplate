@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -109,6 +110,23 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 
 		this.mockMvc.perform(get("/sample").with(user("user").password("password")).param("gender", "NON_EXISTING"))
 				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(0)));
+	}
+
+	@Test
+	public void whenUpdatingNonExistingEntityThenReturnNotFound() throws Exception {
+		this.mockMvc.perform(
+				put("/sample/12").content("{\"name\":\"updated_name\"}").with(user("user").password("password")))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void whenUpdatingParticularFieldThenUpdateTheValue() throws Exception {
+		SampleBaseEntity entity = this.createdEntityInDB();
+		this.mockMvc.perform(put("/sample/" + entity.getId()).content("{\"name\":\"updated_name\"}")
+				.with(user("user").password("password"))).andExpect(status().isAccepted());
+
+		SampleBaseEntity updatedEntity = this.sampleBaseRepository.findOne(entity.getId());
+		assertEquals("updated_name", updatedEntity.getName());
 	}
 
 	private static SampleBaseEntity getSampleEntity(Function<SampleBaseEntity, SampleBaseEntity> mutator) {

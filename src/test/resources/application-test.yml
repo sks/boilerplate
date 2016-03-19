@@ -1,3 +1,21 @@
 security:
   user:
     password: password
+
+logging:
+  level:
+    org: WARN
+    com.sks: DEBUG
+    com: WARN
+    
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+  datasource:
+    url: jdbc:h2:mem:test;MODE=PostgreSQL
+    driverClassName: org.h2.Driver
+    testOnBorrow: true
+    validationQuery: SELECT 1
+   
+    
