@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import com.sks.boilerplate.repository.util.PredicateBuilder;
+
 @NoRepositoryBean
 public interface CustomRepository<T extends Persistable<ID>, ID extends Serializable>
 		extends PagingAndSortingRepository<T, ID>
@@ -30,5 +32,7 @@ public interface CustomRepository<T extends Persistable<ID>, ID extends Serializ
 	int updateField(ID id, String field, Object newValue);
 
 	void deleteAllInBatch();
+
+	void setPredicateBuilder(PredicateBuilder<T> predicate);
 
 }

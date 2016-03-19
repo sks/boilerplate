@@ -3,8 +3,10 @@ package com.sks.boilerplate.test.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sks.boilerplate.repository.util.PredicateBuilder;
 import com.sks.boilerplate.service.GenericService;
 import com.sks.boilerplate.test.entity.Person;
+import com.sks.boilerplate.test.repository.PersonPredicateBuilder;
 import com.sks.boilerplate.test.repository.PersonRepository;
 
 @Service
@@ -23,4 +25,8 @@ public class PersonService extends GenericService<Person, Long> {
 		return this.personRepository.exists(id);
 	}
 
+	@Override
+	public PredicateBuilder<Person> getPredicate() {
+		return new PersonPredicateBuilder();
+	}
 }

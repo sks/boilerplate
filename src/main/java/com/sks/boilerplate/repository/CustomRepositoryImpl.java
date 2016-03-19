@@ -28,6 +28,8 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import com.sks.boilerplate.annotations.Filterable;
 import com.sks.boilerplate.entity.BaseEntity;
+import com.sks.boilerplate.enums.ErrorKeys;
+import com.sks.boilerplate.exception.ApplicationException;
 import com.sks.boilerplate.repository.util.PredicateBuilder;
 
 import ch.qos.logback.classic.Logger;
@@ -138,7 +140,7 @@ public class CustomRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializa
 			}
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 			// This condition should never occur ideally
-			throw new RuntimeException(e);
+			throw new ApplicationException(ErrorKeys.INTERNAL_SERVER_ERROR, e);
 		}
 
 		return returnList;

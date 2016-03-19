@@ -18,6 +18,11 @@ public class ApplicationException extends RuntimeException {
 		this(errorKey, null);
 	}
 
+	public ApplicationException(Exception exception, ErrorKeys errorKey) {
+		super(exception);
+		this.errorKey = errorKey;
+	}
+
 	public ApplicationException(ErrorKeys errorKey, Object data) {
 		super(errorKey.name());
 		this.errorKey = errorKey;

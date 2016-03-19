@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -71,7 +72,8 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 		Person entity = this.createdEntityInDB();
 		this.mockMvc.perform(get("/person/" + entity.getId()).with(user("user").password("password")).with(csrf()))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.name").value("name"))
-				.andExpect(jsonPath("$.createDate").isNumber()).andExpect(jsonPath("$.modifyDate").isNumber());
+				.andExpect(jsonPath("$.createDate").isNumber()).andExpect(jsonPath("$.modifyDate").isNumber())
+				.andExpect(jsonPath("$.bornBefore").doesNotExist());
 	}
 
 	@Test
@@ -84,7 +86,7 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 	}
 
 	private Person createdEntityInDB() {
-		return this.personRepository.save(getPersonEntity(e -> e));
+		return this.personRepository.save(getPerson(e -> e));
 	}
 
 	@Test
@@ -95,14 +97,14 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 
 	@Test
 	public void whenGettingAllEntitiesThenReturnList() throws Exception {
-		IntStream.rangeClosed(1, 8).mapToObj(i -> getPersonEntity("name_" + i)).forEach(this.personRepository::save);
+		IntStream.rangeClosed(1, 8).mapToObj(i -> getPerson("name_" + i)).forEach(this.personRepository::save);
 		this.mockMvc.perform(get("/person").with(user("user").password("password"))).andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(8)));
 	}
 
 	@Test
 	public void whenGettingEntitiesWithOrderSpecifiedThenHonorThat() throws Exception {
-		IntStream.rangeClosed(1, 8).mapToObj(i -> getPersonEntity("name_" + i)).forEach(this.personRepository::save);
+		IntStream.rangeClosed(1, 8).mapToObj(i -> getPerson("name_" + i)).forEach(this.personRepository::save);
 		this.mockMvc.perform(get("/person").param("asc", "false").with(user("user").password("password")))
 				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(8))).andExpect(jsonPath("$[0].id").value(8))
 				.andExpect(jsonPath("$[1].id").value(7));
@@ -114,7 +116,7 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 
 	@Test
 	public void whenPageSizeAndPageIsMentionedThenReturnTheListAccordingly() throws Exception {
-		IntStream.rangeClosed(1, 5).mapToObj(i -> getPersonEntity("name_" + i)).forEach(this.personRepository::save);
+		IntStream.rangeClosed(1, 5).mapToObj(i -> getPerson("name_" + i)).forEach(this.personRepository::save);
 
 		List<Person> allEntities = Lists.newArrayList(this.personRepository.findAll());
 		assertEquals(5, allEntities.size());
@@ -141,7 +143,7 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 
 	@Test
 	public void whenFilteringBasedOnTypeThenReturnFilteredValues() throws Exception {
-		IntStream.rangeClosed(1, 8).mapToObj(i -> getPersonEntity("name_" + i, i % 2 == 0 ? "F" : "M"))
+		IntStream.rangeClosed(1, 8).mapToObj(i -> getPerson("name_" + i, i % 2 == 0 ? "F" : "M"))
 				.forEach(this.personRepository::save);
 		this.mockMvc.perform(get("/person").with(user("user").password("password")).param("gender", "F"))
 				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(4)));
@@ -179,20 +181,40 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 		assertEquals("F", updatedEntity.getGender());
 	}
 
-	private static Person getPersonEntity(Function<Person, Person> mutator) {
-		return getPersonEntity(mutator, "name");
+	@Test
+	public void whenGivingAPredicateThenReturnFilteredResult() throws Exception {
+		DateTime bornBefore = new DateTime().minusYears(3);
+
+		IntStream.rangeClosed(1, 8)
+				.mapToObj(i -> getPerson("name_" + i, i % 2 == 0 ? "F" : "M", new DateTime().minusYears(i)))
+				.forEach(this.personRepository::save);
+
+		assertEquals(5, Lists.newArrayList(this.personRepository.findByDateOfBirthBefore(bornBefore)).size());
+		this.mockMvc
+				.perform(get("/person").param("bornBefore", bornBefore.getMillis() + "")
+						.with(user("user").password("password")))
+				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(5)));
+
 	}
 
-	private static Person getPersonEntity(Function<Person, Person> mutator, String name) {
-		return mutator.apply(getPersonEntity(name));
+	private static Person getPerson(Function<Person, Person> mutator) {
+		return getPerson(mutator, "name");
 	}
 
-	private static Person getPersonEntity(String name) {
-		return getPersonEntity(name, "F");
+	private static Person getPerson(Function<Person, Person> mutator, String name) {
+		return mutator.apply(getPerson(name));
 	}
 
-	private static Person getPersonEntity(String name, String gender) {
+	private static Person getPerson(String name) {
+		return getPerson(name, "F");
+	}
+
+	private static Person getPerson(String name, String gender) {
 		return new Person(name, gender);
+	}
+
+	private static Person getPerson(String name, String gender, DateTime dateOfBirth) {
+		return new Person(name, gender, dateOfBirth);
 	}
 
 	@Test

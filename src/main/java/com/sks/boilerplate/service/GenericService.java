@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Persistable;
 import com.sks.boilerplate.enums.ErrorKeys;
 import com.sks.boilerplate.exception.ApplicationException;
 import com.sks.boilerplate.repository.CustomRepository;
+import com.sks.boilerplate.repository.util.PredicateBuilder;
 import com.sks.boilerplate.service.util.NullAwareBeanUtil;
 
 import lombok.NonNull;
@@ -20,6 +22,11 @@ public abstract class GenericService<Entity extends Persistable<ID>, ID extends 
 
 	@Autowired
 	protected CustomRepository<Entity, ID> repository;
+
+	@PostConstruct
+	public void postConstruct() {
+		this.repository.setPredicateBuilder(this.getPredicate());
+	}
 
 	public Entity findById(@NonNull ID id) {
 		this.verifyAccess(id);
@@ -62,5 +69,13 @@ public abstract class GenericService<Entity extends Persistable<ID>, ID extends 
 			throw new ApplicationException(ErrorKeys.UNPROCESSABLE_ENTITY);
 		}
 		return this.repository.save(entity);
+	}
+
+	public void setPredicateBuild() {
+		this.repository.setPredicateBuilder(this.getPredicate());
+	}
+
+	public PredicateBuilder<Entity> getPredicate() {
+		return null;
 	}
 }

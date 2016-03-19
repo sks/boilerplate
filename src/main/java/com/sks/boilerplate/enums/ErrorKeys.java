@@ -16,7 +16,11 @@ public enum ErrorKeys {
 	/**
 	 * The unprocessable entity
 	 */
-	UNPROCESSABLE_ENTITY(HttpStatus.UNPROCESSABLE_ENTITY);
+	UNPROCESSABLE_ENTITY(HttpStatus.UNPROCESSABLE_ENTITY),
+	/**
+	 * Internal server Error
+	 */
+	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR);
 
 	@Getter
 	private HttpStatus status;
