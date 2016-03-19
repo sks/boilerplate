@@ -29,4 +29,6 @@ public interface CustomRepository<T extends Persistable<ID>, ID extends Serializ
 	@Transactional
 	int updateField(ID id, String field, Object newValue);
 
+	void deleteAllInBatch();
+
 }

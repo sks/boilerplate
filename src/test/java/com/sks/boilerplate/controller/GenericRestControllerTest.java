@@ -101,6 +101,45 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 	}
 
 	@Test
+	public void whenGettingEntitiesWithOrderSpecifiedThenHonorThat() throws Exception {
+		IntStream.rangeClosed(1, 8).mapToObj(i -> getPersonEntity("name_" + i)).forEach(this.personRepository::save);
+		this.mockMvc.perform(get("/person").param("asc", "false").with(user("user").password("password")))
+				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(8))).andExpect(jsonPath("$[0].id").value(8))
+				.andExpect(jsonPath("$[1].id").value(7));
+
+		this.mockMvc.perform(get("/person").param("asc", "true").with(user("user").password("password")))
+				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(8))).andExpect(jsonPath("$[0].id").value(1))
+				.andExpect(jsonPath("$[1].id").value(2));
+	}
+
+	@Test
+	public void whenPageSizeAndPageIsMentionedThenReturnTheListAccordingly() throws Exception {
+		IntStream.rangeClosed(1, 5).mapToObj(i -> getPersonEntity("name_" + i)).forEach(this.personRepository::save);
+
+		List<Person> allEntities = Lists.newArrayList(this.personRepository.findAll());
+		assertEquals(5, allEntities.size());
+
+		this.mockMvc.perform(get("/person").param("asc", "false").param("page", "0").param("pageSize", "2")
+				.with(user("user").password("password"))).andExpect(status().isBadRequest());
+
+		this.mockMvc
+				.perform(get("/person").param("asc", "false").param("page", "1").param("pageSize", "2")
+						.with(user("user").password("password")))
+				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)));
+
+		this.mockMvc
+				.perform(get("/person").param("asc", "false").param("page", "2").param("pageSize", "4")
+						.with(user("user").password("password")))
+				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)));
+
+		this.mockMvc
+				.perform(get("/person").param("asc", "false").param("page", "2").param("pageSize", "2000")
+						.with(user("user").password("password")))
+				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(0)));
+
+	}
+
+	@Test
 	public void whenFilteringBasedOnTypeThenReturnFilteredValues() throws Exception {
 		IntStream.rangeClosed(1, 8).mapToObj(i -> getPersonEntity("name_" + i, i % 2 == 0 ? "F" : "M"))
 				.forEach(this.personRepository::save);

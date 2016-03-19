@@ -1,5 +1,7 @@
 package com.sks.boilerplate.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
@@ -12,9 +14,14 @@ import com.sks.boilerplate.service.CommonService;
 import lombok.Getter;
 
 @MappedSuperclass
-public class SecuredEntity {
+public class SecuredEntity<ID extends Serializable> extends BaseEntity<ID> {
 
-	@JoinColumn(name = "last_modified_by", nullable = false)
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@JoinColumn(name = "modified_by", nullable = false)
 	@ManyToOne
 	@Getter
 	@JsonIgnore

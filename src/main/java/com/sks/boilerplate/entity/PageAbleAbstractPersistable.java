@@ -33,7 +33,14 @@ public class PageAbleAbstractPersistable<ID extends Serializable> extends Abstra
 
 	@Transient
 	@JsonProperty(access = Access.WRITE_ONLY)
-	private boolean asc = false;
+	private boolean asc = true;
+
+	public void setPage(int page) {
+		if (page < 1) {
+			throw new IllegalArgumentException("Page should be greater than 1");
+		}
+		this.page = page;
+	}
 
 	/*
 	 * (non-Javadoc)

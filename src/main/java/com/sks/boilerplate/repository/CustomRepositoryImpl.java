@@ -70,8 +70,9 @@ public class CustomRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializa
 
 		// With the list of conditions, come up with the final query
 		criteriaQuery.where(conditions.toArray(new Predicate[] {}));
-
-		criteriaQuery.orderBy(criteriaBuilder.asc(root.get("id")));
+		if (!t.isAsc()) {
+			criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
+		}
 
 		// Execute the query and return the result
 		TypedQuery<T> createQuery = this.entityManager.createQuery(criteriaQuery);
