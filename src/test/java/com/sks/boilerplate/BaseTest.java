@@ -11,12 +11,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.sks.boilerplate.security.UserAuthentication;
-import com.sks.boilerplate.test.BoilerplateApplication;
+import com.sks.boilerplate.test.SampleApplication;
 
 import ch.qos.logback.classic.Logger;
 
 @ActiveProfiles("test")
-@SpringApplicationConfiguration(classes = { BoilerplateApplication.class })
+@SpringApplicationConfiguration(classes = { SampleApplication.class })
 public class BaseTest {
 
 	@Rule
