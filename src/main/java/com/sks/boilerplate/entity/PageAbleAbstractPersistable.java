@@ -12,12 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @MappedSuperclass
 @Data
-@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class PageAbleAbstractPersistable<ID extends Serializable> extends AbstractPersistable<ID> {
 

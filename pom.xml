@@ -141,4 +141,17 @@
 			</plugin>
 		</plugins>
 	</build>
+	<url>https://sks.github.io/boilerplate</url>
+	<organization>
+		<name>boilerplate</name>
+		<url>https://sks.github.io</url>
+	</organization>
+	<ciManagement>
+		<system>travis-ci</system>
+		<url>https://travis-ci.org/sks/boilerplate</url>
+	</ciManagement>
+	<issueManagement>
+		<system>issues</system>
+		<url>https://github.com/sks/boilerplate/issues</url>
+	</issueManagement>
 </project>

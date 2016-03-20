@@ -161,10 +161,7 @@ public class CustomRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializa
 			return this.filterableFields;
 		}
 		this.filterableFields = new ArrayList<Field>();
-		if (t instanceof BaseEntity) {
-			this.filterableFields.addAll(Arrays.asList(BaseEntity.class.getDeclaredFields()));
-		}
-
+		this.filterableFields.addAll(Arrays.asList(BaseEntity.class.getDeclaredFields()));
 		this.filterableFields.addAll(Arrays.asList(this.classType.getDeclaredFields()));
 
 		final Iterator<Field> fieldIterator = this.filterableFields.iterator();
