@@ -16,15 +16,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sks.boilerplate.annotations.Filterable;
 import com.sks.boilerplate.entity.BaseEntity;
@@ -47,11 +48,14 @@ public class CustomRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializa
 		super(entityInformation, em);
 		this.classType = entityInformation.getJavaType();
 		this.entityManager = em;
+		this.entityInformation = entityInformation;
 	}
 
 	private final EntityManager entityManager;
 	private List<Field> filterableFields;
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+
+	private final JpaEntityInformation<T, ID> entityInformation;
 
 	/**
 	 * @param t
@@ -198,17 +202,17 @@ public class CustomRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializa
 	}
 
 	@Override
-	public int updateField(ID id, String field, Object newValue) {
+	@Transactional
+	@Modifying(clearAutomatically = true)
+	public void updateField(ID id, String field, Object newValue) {
 		this.logger.info("Updating the field " + field + " for the entity " + this.classType + "[" + id + "] to value "
 				+ newValue);
-		final CriteriaBuilder criteriaBuilder = this.entityManager.getCriteriaBuilder();
-		CriteriaUpdate<T> updateQuery = criteriaBuilder.createCriteriaUpdate(this.classType);
-		final Root<T> root = updateQuery.from(this.classType);
-		updateQuery.set(field, newValue);
-		updateQuery.where(criteriaBuilder.equal(root.get("id"), id));
-		int rowUpdated = this.entityManager.createQuery(updateQuery).executeUpdate();
-		this.entityManager.flush();
-		return rowUpdated;
-	}
+		StringBuilder builder = new StringBuilder("update %s x set %s='%s' where id=%s");
 
+		this.entityManager
+				.createQuery(
+						String.format(builder.toString(), this.entityInformation.getEntityName(), field, newValue, id))
+				.executeUpdate();
+		this.entityManager.detach(this.findOne(id));
+	}
 }

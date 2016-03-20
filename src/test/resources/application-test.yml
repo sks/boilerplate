@@ -17,5 +17,3 @@ spring:
     driverClassName: org.h2.Driver
     testOnBorrow: true
     validationQuery: SELECT 1
-   
-    

@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import org.joda.time.DateTime;
@@ -195,26 +194,6 @@ public class GenericRestControllerTest extends WebIntegrationTesting {
 						.with(user("user").password("password")))
 				.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(5)));
 
-	}
-
-	private static Person getPerson(Function<Person, Person> mutator) {
-		return getPerson(mutator, "name");
-	}
-
-	private static Person getPerson(Function<Person, Person> mutator, String name) {
-		return mutator.apply(getPerson(name));
-	}
-
-	private static Person getPerson(String name) {
-		return getPerson(name, "F");
-	}
-
-	private static Person getPerson(String name, String gender) {
-		return new Person(name, gender);
-	}
-
-	private static Person getPerson(String name, String gender, DateTime dateOfBirth) {
-		return new Person(name, gender, dateOfBirth);
 	}
 
 	@Test

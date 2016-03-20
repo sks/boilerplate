@@ -29,7 +29,7 @@ public interface CustomRepository<T extends Persistable<ID>, ID extends Serializ
 
 	@Modifying
 	@Transactional
-	int updateField(ID id, String field, Object newValue);
+	void updateField(ID id, String field, Object newValue);
 
 	void setPredicateBuilder(PredicateBuilder<T> predicate);
 

@@ -20,10 +20,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
 
 @Entity
 @Table(name = "sample_entity")
 @Data
+@ToString(exclude = "bornBefore")
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class Person extends BaseEntity<Long> {
