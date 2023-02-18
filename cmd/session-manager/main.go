@@ -14,6 +14,7 @@ import (
 	"io.github.com/sks/services/pkg/serverutils"
 	"io.github.com/sks/services/pkg/serverutils/handlers"
 	"io.github.com/sks/services/pkg/services"
+	"io.github.com/sks/services/pkg/svchealth"
 )
 
 type appConfig struct {
@@ -46,6 +47,7 @@ func main() {
 		logger.Info("starting http server", slog.String("port", config.Port))
 		serverMux := http.NewServeMux()
 		defer logger.Info("stopped http server")
+		serverMux.Handle("/internal/health", svchealth.NewHandler())
 		serverMux.HandleFunc("/auth/callback", sessionHandler.Callback)
 		serverMux.HandleFunc("/auth/login", sessionHandler.Login)
 		server := &http.Server{

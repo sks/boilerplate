@@ -67,3 +67,24 @@ resource "helm_release" "nginx_controller" {
     value = "daemonset"
   }
 }
+
+
+resource "helm_release" "jaeger" {
+  name      = "jaeger-all-in-one"
+  namespace = var.namespace
+
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
+
+  repository = "https://raw.githubusercontent.com/hansehe/jaeger-all-in-one/master/helm/charts"
+  chart      = "jaeger-all-in-one"
+  replace    = true
+
+  values = [
+    templatefile("helm_values/jaeger.yaml", {
+      domain = var.domain
+      creds  = var.creds
+    })
+  ]
+}

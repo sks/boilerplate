@@ -4,3 +4,4 @@ build
 *.tfstate
 *.backup
 secrets.tfvars
+.envrc

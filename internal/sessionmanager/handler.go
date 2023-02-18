@@ -20,7 +20,7 @@ type Option struct {
 	}
 	IssuerURL string `envconfig:"ISSUER_URL" default:"http://kubernetes.docker.internal/sso"`
 	Dex       struct {
-		GRPCEndpoint string `envconfig:"DEX_GRPC_ENDPOINT" default:"dex-idp:5558"`
+		GRPCEndpoint string `envconfig:"DEX_GRPC_ENDPOINT" default:"dex-idp:5557"`
 		CertLocation string `envconfig:"DEX_GRPC_CERT_LOCATION" `
 	}
 }
