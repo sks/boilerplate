@@ -24,6 +24,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build session-manager
+        if: github.event_name == 'push'
         run: make docker_push/session-manager
       - name: Build mf-importjson
+        if: github.event_name == 'push'
         run: make docker_push/mf-importjson
+      - name: Build session-manager
+        run: make dockerize/session-manager
+      - name: Build mf-importjson
+        run: make dockerize/mf-importjson
