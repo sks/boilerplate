@@ -11,7 +11,6 @@ RUN go mod vendor
 COPY . .
 
 RUN go build \
-    -mod vendor \
     -ldflags="-X 'io.github.com/sks/services/pkg/constants.Version=${GIT_TAG}'" \
     -o /bin/mf-importjson \
     ./cmd/mf-importjson
