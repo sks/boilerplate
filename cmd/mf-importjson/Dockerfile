@@ -6,7 +6,7 @@ WORKDIR /code
 
 COPY go.mod go.sum ./
 
-RUN go version && go env && go mod download
+RUN go mod download
 
 COPY . .
 
