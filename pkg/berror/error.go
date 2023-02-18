@@ -1,7 +1,7 @@
 package berror
 
 type IError interface {
-	Message() string
+	error
 	Type() string
 	StatusCode() int
 	Data() []any
@@ -14,7 +14,7 @@ type Error struct {
 	D    []any  `json:"data"`
 }
 
-func (e Error) Message() string {
+func (e Error) Error() string {
 	return e.M
 }
 

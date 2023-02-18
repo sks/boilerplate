@@ -1,0 +1,35 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GOFLAGS: -mod=readonly
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout Repository
+      - name: Setup Go environment
+        uses: actions/setup-go@v2.1.3
+        with:
+          go-version: 1.19
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build session-manager
+        if: github.event_name == 'push'
+        run: make docker_push/session-manager
+      - name: Build mf-importjson
+        if: github.event_name == 'push'
+        run: make docker_push/mf-importjson
+      - name: Build session-manager
+        run: make dockerize/session-manager
+      - name: Build mf-importjson
+        run: make dockerize/mf-importjson

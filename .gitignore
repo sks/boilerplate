@@ -1,2 +1,6 @@
 vendor
 build
+**/.terraform*
+*.tfstate
+*.backup
+secrets.tfvars

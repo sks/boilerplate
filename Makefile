@@ -19,4 +19,6 @@ dockerize/%:
 		-t ${DOCKER_REPO}/$*:${DOCKER_TAG} \
 		-f cmd/$*/Dockerfile .
 
-dockerize: dockerize/mf-importjson
+docker_push/%:
+	$(MAKE) dockerize/$*
+	docker push ${DOCKER_REPO}/$*:${DOCKER_TAG}

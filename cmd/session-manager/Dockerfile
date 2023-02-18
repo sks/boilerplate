@@ -12,12 +12,12 @@ COPY . .
 
 RUN go build \
     -ldflags="-X 'io.github.com/sks/services/pkg/constants.Version=${GIT_TAG}'" \
-    -o /bin/mf-importjson \
-    ./cmd/mf-importjson
+    -o /bin/session-manager \
+    ./cmd/session-manager
 
 
 FROM alpine
 
-COPY --from=builder /bin/mf-importjson /bin/mf-importjson
+COPY --from=builder /bin/session-manager /bin/session-manager
 
-ENTRYPOINT [ "/bin/mf-importjson" ]
+ENTRYPOINT [ "/bin/session-manager" ]
