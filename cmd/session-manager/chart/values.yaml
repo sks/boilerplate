@@ -8,7 +8,7 @@ image:
   repository: sabithksme/session-manager
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1e1aceb"
+  tag: "9075df5"
 
 imagePullSecrets: []
 nameOverride: ""

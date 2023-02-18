@@ -10,6 +10,7 @@ import (
 	"golang.org/x/exp/slog"
 	"golang.org/x/sync/errgroup"
 	"io.github.com/sks/services/internal/sessionmanager"
+	"io.github.com/sks/services/pkg/constants"
 	"io.github.com/sks/services/pkg/logging"
 	"io.github.com/sks/services/pkg/serverutils"
 	"io.github.com/sks/services/pkg/serverutils/handlers"
@@ -47,7 +48,7 @@ func main() {
 		logger.Info("starting http server", slog.String("port", config.Port))
 		serverMux := http.NewServeMux()
 		defer logger.Info("stopped http server")
-		serverMux.Handle("/internal/health", svchealth.NewHandler())
+		serverMux.Handle(constants.HealthCheckEndpoint, svchealth.NewHandler())
 		serverMux.HandleFunc("/auth/callback", sessionHandler.Callback)
 		serverMux.HandleFunc("/auth/login", sessionHandler.Login)
 		server := &http.Server{

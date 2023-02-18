@@ -23,3 +23,6 @@ dockerize/%:
 docker_push/%:
 	$(MAKE) dockerize/$*
 	docker push ${DOCKERHUB_USERNAME}/$*:${DOCKER_TAG}
+
+helm/install/%:
+	helm upgrade --install $* ./cmd/$*/chart

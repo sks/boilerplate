@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"golang.org/x/exp/slog"
+	"io.github.com/sks/services/pkg/constants"
 	"io.github.com/sks/services/pkg/logging"
 )
 
@@ -20,6 +21,10 @@ func (s *statusAwareResponseWriter) WriteHeader(statusCode int) {
 
 func Log(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == constants.HealthCheckEndpoint {
+			next.ServeHTTP(w, r)
+			return
+		}
 		newStatusAwareResponseWriter := &statusAwareResponseWriter{w, 0}
 		defer func(startTime time.Time) {
 			logging.GetLogger(r.Context()).Debug("request handled",
