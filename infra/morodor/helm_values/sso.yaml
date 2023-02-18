@@ -1,0 +1,24 @@
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: ${domain}
+      paths:
+        - path: /sso
+          pathType: ImplementationSpecific
+  
+grpc:
+  enabled: true
+
+config:
+  issuer: http://${domain}/sso
+  logger:
+    format: json
+  connectors:
+    - type: github
+      id: github
+      name: GitHub
+      config:
+        clientID: ${creds.github_clientid}
+        clientSecret: ${creds.github_clientsecret}
+        redirectURI: http://${domain}/sso/callback

@@ -16,6 +16,7 @@ import (
 func Init(ctx context.Context) (context.Context, func()) {
 	ctx, cancel := signal.NotifyContext(ctx, os.Kill, os.Interrupt)
 	startTime := time.Now()
+	logging.GetLogger(ctx).Info("starting the server")
 	return ctx, func() {
 		logging.GetLogger(ctx).Warn("shutting down the server", slog.Float64("minutes", time.Since(startTime).Minutes()))
 		cancel()

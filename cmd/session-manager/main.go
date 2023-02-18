@@ -5,22 +5,20 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"runtime"
-
-	"io.github.com/sks/services/internal/importjson"
-	"io.github.com/sks/services/pkg/logging"
-	"io.github.com/sks/services/pkg/serverutils"
-	"io.github.com/sks/services/pkg/serverutils/handlers"
-	"io.github.com/sks/services/pkg/services"
 
 	"github.com/kelseyhightower/envconfig"
 	"golang.org/x/exp/slog"
 	"golang.org/x/sync/errgroup"
+	"io.github.com/sks/services/internal/sessionmanager"
+	"io.github.com/sks/services/pkg/logging"
+	"io.github.com/sks/services/pkg/serverutils"
+	"io.github.com/sks/services/pkg/serverutils/handlers"
+	"io.github.com/sks/services/pkg/services"
 )
 
 type appConfig struct {
-	Port    string `envconfig:"PORT" default:"3000"`
-	Options importjson.Options
+	Port                 string `envconfig:"PORT" default:"3001"`
+	SessionManagerOption sessionmanager.Option
 }
 
 func main() {
@@ -35,11 +33,21 @@ func main() {
 		os.Exit(1)
 	}
 
+	sessionHandler, err := sessionmanager.NewSessionManagerHandler(ctx, config.SessionManagerOption)
+	if err != nil {
+		logger.Error("error creating session manager", err)
+		os.Exit(1)
+	}
 	errGroup, ectx := errgroup.WithContext(ctx)
+	errGroup.Go(func() error {
+		return sessionHandler.CreateClientInDex(ectx)
+	})
 	errGroup.Go(func() error {
 		logger.Info("starting http server", slog.String("port", config.Port))
 		serverMux := http.NewServeMux()
-		serverMux.Handle("/importmap.json", importjson.NewHandler(config.Options))
+		defer logger.Info("stopped http server")
+		serverMux.HandleFunc("/auth/callback", sessionHandler.Callback)
+		serverMux.HandleFunc("/auth/login", sessionHandler.Login)
 		server := &http.Server{
 			Addr: net.JoinHostPort("", config.Port),
 			BaseContext: func(l net.Listener) context.Context {
@@ -53,6 +61,6 @@ func main() {
 	err = errGroup.Wait()
 	if err != nil {
 		logger.Error("server encountered an error", err)
-		runtime.Goexit()
+		os.Exit(1)
 	}
 }
