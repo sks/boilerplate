@@ -11,10 +11,11 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"io.github.com/sks/services/pkg/constants"
 	"io.github.com/sks/services/pkg/logging"
+	"io.github.com/sks/services/pkg/tracer/grpctracer"
 )
 
 func (h Handler) newDexClient(hostAndPort, caPath string) (api.DexClient, *grpc.ClientConn, error) {
-	grpcDialOptions := []grpc.DialOption{}
+	grpcDialOptions := grpctracer.DialOptions()
 	if caPath != "" {
 		creds, err := credentials.NewClientTLSFromFile(caPath, "")
 		if err != nil {

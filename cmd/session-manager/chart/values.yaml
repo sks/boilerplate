@@ -8,7 +8,7 @@ image:
   repository: sabithksme/session-manager
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "4df4725"
+  tag: "1e1aceb"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -43,14 +43,14 @@ service:
 ingress:
   enabled: true
   className: "nginx"
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations:
+    nginx.org/mergeable-ingress-type: "minion"
+    nginx.org/rewrites: "serviceName=session-manager rewrite=/"
   hosts:
     - host: kubernetes.docker.internal
       paths:
-        - path: /session
-          pathType: ImplementationSpecific
+        - path: /session/
+          pathType: Prefix
   tls: []
 
 resources: {}
@@ -82,3 +82,4 @@ env:
   OIDC_REDIRECT_URL: "http://kubernetes.docker.internal/session/auth/callback"
   CLIENT_SECRET: "some_secrets"
   JAEGER_TRACES: "http://jaeger-all-in-one:14268/api/traces"
+  DEBUG: "true"

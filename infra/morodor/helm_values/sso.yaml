@@ -1,11 +1,13 @@
 ingress:
   enabled: true
   className: nginx
+  annotations:
+    nginx.org/mergeable-ingress-type: "minion"
   hosts:
     - host: ${domain}
       paths:
         - path: /sso
-          pathType: ImplementationSpecific
+          pathType: Prefix
   
 grpc:
   enabled: true

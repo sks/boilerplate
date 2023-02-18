@@ -18,3 +18,6 @@ apply: plan
 
 apply/y: plan
 	terraform apply --auto-approve --var-file=${SECRETS_FILE}
+
+destroy:
+	terraform destroy --var-file=${SECRETS_FILE}

@@ -6,6 +6,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.5.0
 	github.com/dexidp/dex/api/v2 v2.1.0
 	github.com/kelseyhightower/envconfig v1.4.0
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.39.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.39.0
 	go.opentelemetry.io/otel v1.13.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.13.0

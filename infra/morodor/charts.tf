@@ -53,21 +53,38 @@ resource "helm_release" "dex_release" {
 resource "helm_release" "nginx_controller" {
   name      = "nginx-stable"
   namespace = var.namespace
-
   depends_on = [
-    kubernetes_namespace.namespace
+    kubernetes_namespace.namespace,    
   ]
 
   repository = "https://helm.nginx.com/stable"
   chart      = "nginx-ingress"
   replace    = true
-
-  set {
-    name  = "controller.kind"
-    value = "daemonset"
-  }
+  values = [
+    templatefile("helm_values/ingress.yaml", {
+      domain = var.domain
+    })
+  ]
 }
 
+resource "kubernetes_ingress_v1" "master_ingress" {
+  depends_on = [
+    helm_release.nginx_controller,    
+  ]
+  metadata {
+    name = "ingress-master"
+    namespace = var.namespace
+    annotations = {
+      "nginx.org/mergeable-ingress-type" : "master"
+    }
+  }
+  spec {
+    ingress_class_name = "nginx"
+    rule {
+      host = var.domain
+    }
+  }
+}
 
 resource "helm_release" "jaeger" {
   name      = "jaeger-all-in-one"
@@ -84,7 +101,6 @@ resource "helm_release" "jaeger" {
   values = [
     templatefile("helm_values/jaeger.yaml", {
       domain = var.domain
-      creds  = var.creds
     })
   ]
 }

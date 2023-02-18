@@ -1,9 +1,2 @@
 ingress:
-  enabled: true
-  className: nginx
-  hosts:
-    - host: ${domain}
-      paths:
-        - path: /trace
-          pathType: ImplementationSpecific
-  annotations: {}
+  enabled: false
