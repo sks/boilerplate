@@ -16,6 +16,9 @@ plan: init
 apply: plan
 	terraform apply --var-file=${SECRETS_FILE}
 
+apply/target/%:
+	terraform apply -target=$* --var-file=${SECRETS_FILE}
+
 apply/y: plan
 	terraform apply --auto-approve --var-file=${SECRETS_FILE}
 

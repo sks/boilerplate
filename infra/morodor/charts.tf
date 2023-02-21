@@ -54,7 +54,7 @@ resource "helm_release" "nginx_controller" {
   name      = "nginx-stable"
   namespace = var.namespace
   depends_on = [
-    kubernetes_namespace.namespace,    
+    kubernetes_namespace.namespace,
   ]
 
   repository = "https://helm.nginx.com/stable"
@@ -69,10 +69,10 @@ resource "helm_release" "nginx_controller" {
 
 resource "kubernetes_ingress_v1" "master_ingress" {
   depends_on = [
-    helm_release.nginx_controller,    
+    helm_release.nginx_controller,
   ]
   metadata {
-    name = "ingress-master"
+    name      = "ingress-master"
     namespace = var.namespace
     annotations = {
       "nginx.org/mergeable-ingress-type" : "master"
@@ -104,3 +104,25 @@ resource "helm_release" "jaeger" {
     })
   ]
 }
+
+resource "random_string" "session_manager_pwd" {
+  length  = 32
+  special = false
+}
+
+resource "helm_release" "session-manager" {
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "postgresql"
+  namespace  = var.namespace
+  count      = (var.profile == "local") ? 1 : 0
+  name       = "session-manager-db"
+  replace    = true
+  values = [
+    templatefile("helm_values/session_manager_db.yaml", {
+      password = random_string.session_manager_pwd.result
+      username = "session-manager"
+      database = "session-manager"
+    })
+  ]
+}
+

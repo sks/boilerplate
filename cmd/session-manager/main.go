@@ -11,6 +11,7 @@ import (
 	"golang.org/x/sync/errgroup"
 	"io.github.com/sks/services/internal/sessionmanager"
 	"io.github.com/sks/services/pkg/constants"
+	"io.github.com/sks/services/pkg/db"
 	"io.github.com/sks/services/pkg/logging"
 	"io.github.com/sks/services/pkg/serverutils"
 	"io.github.com/sks/services/pkg/serverutils/handlers"
@@ -21,6 +22,7 @@ import (
 type appConfig struct {
 	Port                 string `envconfig:"PORT" default:"3001"`
 	SessionManagerOption sessionmanager.Option
+	DBConfig             db.Configuration
 }
 
 func main() {

@@ -13,3 +13,7 @@ creds = {
     github_clientsecret: "<GITHUB_CLIENT_SECRET>"
 }
 ```
+
+```sh
+terraform apply -target=helm_release.session-manager 
+```
