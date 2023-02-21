@@ -37,6 +37,19 @@ func main() {
 		os.Exit(1)
 	}
 
+	db, err := config.DBConfig.DB()
+	if err != nil {
+		logger.Error("error connecting to DB", err)
+		os.Exit(1)
+	}
+	svchealth.RegisterHealthCheck(func(ctx context.Context) error {
+		db, err := db.DB()
+		if err == nil {
+			err = db.PingContext(ctx)
+		}
+		return err
+	})
+
 	sessionHandler, err := sessionmanager.NewSessionManagerHandler(ctx, config.SessionManagerOption)
 	if err != nil {
 		logger.Error("error creating session manager", err)

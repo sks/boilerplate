@@ -105,21 +105,23 @@ resource "helm_release" "jaeger" {
   ]
 }
 
-resource "random_string" "session_manager_pwd" {
+resource "random_string" "session_manager_db_pwd" {
   length  = 32
-  special = false
+  special = true
 }
 
 resource "helm_release" "session-manager" {
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "postgresql"
   namespace  = var.namespace
-  count      = (var.profile == "local") ? 1 : 0
-  name       = "session-manager-db"
-  replace    = true
+
+  count   = (var.profile == "local") ? 1 : 0
+  name    = "session-manager-db"
+  replace = true
+
   values = [
     templatefile("helm_values/session_manager_db.yaml", {
-      password = random_string.session_manager_pwd.result
+      password = random_string.session_manager_db_pwd.result
       username = "session-manager"
       database = "session-manager"
     })

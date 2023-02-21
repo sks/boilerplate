@@ -18,9 +18,16 @@ type handler struct {
 
 var h *handler
 
-func NewHandler() http.Handler {
-	h = &handler{}
-	return h
+func init() {
+	h = NewHandler()
+}
+
+var _ http.Handler = h
+
+func NewHandler() *handler {
+	return &handler{
+		checks: []HealthCheckFn{},
+	}
 }
 
 func RegisterHealthCheck(f HealthCheckFn) {
