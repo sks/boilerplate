@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+
 	"io.github.com/sks/services/pkg/constants"
 )
 

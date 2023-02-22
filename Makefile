@@ -26,3 +26,14 @@ docker_push/%:
 
 helm/install/%:
 	helm upgrade --install $* ./cmd/$*/chart
+
+go/fakes:
+	go generate ./...
+
+go/lint:
+	golangci-lint run ./...
+
+go/test:
+	go test ./...
+
+go: go/fakes go/lint go/test

@@ -5,10 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"io.github.com/sks/services/pkg/constants"
-
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/exp/slog"
+
+	"io.github.com/sks/services/pkg/constants"
 )
 
 var mylogger *slog.Logger
@@ -18,8 +18,10 @@ func init() {
 	if os.Getenv("DEBUG") != "" {
 		logHandler.Level = slog.LevelDebug
 	}
-	logger := slog.New(logHandler.NewJSONHandler(os.Stderr))
-	mylogger = logger.With(slog.String("process", filepath.Base(os.Args[0])), slog.String("version", constants.Version))
+	mylogger = slog.New(logHandler.NewJSONHandler(os.Stderr)).
+		With(
+			slog.String("process", filepath.Base(os.Args[0])),
+			slog.String("version", constants.Version))
 }
 
 func GetLogger(ctx context.Context) *slog.Logger {

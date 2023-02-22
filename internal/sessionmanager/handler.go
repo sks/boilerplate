@@ -39,12 +39,15 @@ func NewSessionManagerHandler(ctx context.Context, opts Option) (Handler, error)
 	return Handler{
 		opts:     opts,
 		provider: provider,
-		verifier: provider.Verifier(&oidc.Config{ClientID: opts.Client.ID}),
+		verifier: provider.Verifier(&oidc.Config{
+			ClientID: opts.Client.ID,
+		}),
 	}, nil
 }
 
 func (h Handler) Login(w http.ResponseWriter, req *http.Request) {
-	redirectURL := h.oauth2Config(req.Context(), []string{"openid", "profile", "email"}).AuthCodeURL(req.URL.Query().Get("state"))
+	state := req.URL.Query().Get("state")
+	redirectURL := h.oauth2Config([]string{"openid", "profile", "email"}).AuthCodeURL(state)
 	http.Redirect(w, req, redirectURL, http.StatusTemporaryRedirect)
 }
 
@@ -60,7 +63,7 @@ func (h Handler) Callback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	ctx := oidc.ClientContext(req.Context(), httputil.DefaultClient())
-	oauth2Config := h.oauth2Config(req.Context(), nil)
+	oauth2Config := h.oauth2Config(nil)
 	token, err := oauth2Config.Exchange(ctx, code)
 	if err != nil {
 		httputil.WriteError(req.Context(), w, err)
@@ -71,7 +74,6 @@ func (h Handler) Callback(w http.ResponseWriter, req *http.Request) {
 		httputil.WriteError(req.Context(), w, err)
 		return
 	}
-
 }
 
 func (h Handler) verifyToken(ctx context.Context, token *oauth2.Token) (Session, error) {
@@ -91,7 +93,7 @@ func (h Handler) verifyToken(ctx context.Context, token *oauth2.Token) (Session,
 	return session, nil
 }
 
-func (h Handler) oauth2Config(ctx context.Context, scopes []string) *oauth2.Config {
+func (h Handler) oauth2Config(scopes []string) *oauth2.Config {
 	return &oauth2.Config{
 		ClientID:     h.opts.Client.ID,
 		ClientSecret: h.opts.Client.Secret,

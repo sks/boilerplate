@@ -3,7 +3,10 @@ package httputil
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
+
+	"golang.org/x/exp/slog"
 
 	"io.github.com/sks/services/pkg/berror"
 	"io.github.com/sks/services/pkg/logging"
@@ -19,11 +22,15 @@ func EncodeResponse(ctx context.Context, w http.ResponseWriter, val any) {
 }
 
 func WriteError(ctx context.Context, w http.ResponseWriter, err error) {
-	val, ok := err.(berror.IError)
+	var val berror.IError = berror.Error{}
+	ok := errors.As(err, &val)
 	if !ok {
 		_ = metrics.RecordError(ctx, err, 2)
 		val = berror.New("internal server error", "INTERNAL_SERVER_ERROR", http.StatusInternalServerError)
 	}
-	_ = json.NewEncoder(w).Encode(val)
+	err = json.NewEncoder(w).Encode(val)
+	if err != nil {
+		logging.GetLogger(ctx).Warn("error encoding error to writer", slog.Any("error", err))
+	}
 	w.WriteHeader(val.StatusCode())
 }

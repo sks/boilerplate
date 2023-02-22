@@ -6,6 +6,7 @@ import (
 
 	"golang.org/x/exp/slog"
 	"golang.org/x/sync/errgroup"
+
 	"io.github.com/sks/services/pkg/httputil"
 	"io.github.com/sks/services/pkg/logging"
 )
@@ -19,15 +20,13 @@ type handler struct {
 var h *handler
 
 func init() {
-	h = NewHandler()
-}
-
-var _ http.Handler = h
-
-func NewHandler() *handler {
-	return &handler{
+	h = &handler{
 		checks: []HealthCheckFn{},
 	}
+}
+
+func NewHandler() http.Handler {
+	return h
 }
 
 func RegisterHealthCheck(f HealthCheckFn) {

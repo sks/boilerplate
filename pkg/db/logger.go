@@ -7,6 +7,7 @@ import (
 
 	"golang.org/x/exp/slog"
 	"gorm.io/gorm/logger"
+
 	"io.github.com/sks/services/pkg/logging"
 )
 
@@ -21,7 +22,6 @@ func (l *gormLogger) LogMode(lvl logger.LogLevel) logger.Interface {
 
 func (l *gormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
 	logging.GetLogger(ctx).Info(fmt.Sprintf(msg, data...))
-
 }
 
 func (l *gormLogger) Warn(ctx context.Context, msg string, data ...interface{}) {

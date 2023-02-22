@@ -1,11 +1,14 @@
 package tracer
 
 import (
+	"fmt"
+
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+
 	"io.github.com/sks/services/pkg/constants"
 )
 
@@ -17,8 +20,9 @@ func tracerProvider(url string) (*trace.TracerProvider, error) {
 	// Create the Jaeger exporter
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating jaeger connection: %w", err)
 	}
+
 	return trace.NewTracerProvider(
 		// Always be sure to batch in production.
 		trace.WithBatcher(exp),

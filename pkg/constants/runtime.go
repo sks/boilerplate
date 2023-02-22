@@ -19,6 +19,7 @@ func serviceName() string {
 	if val := os.Getenv("SERVICE_NAME"); val != "" {
 		return val
 	}
+
 	return filepath.Base(os.Args[0])
 }
 

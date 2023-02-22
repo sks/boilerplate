@@ -10,6 +10,7 @@ import (
 	"go.opentelemetry.io/otel/metric/global"
 	"go.opentelemetry.io/otel/metric/instrument"
 	"golang.org/x/exp/slog"
+
 	"io.github.com/sks/services/pkg/constants"
 	"io.github.com/sks/services/pkg/logging"
 )

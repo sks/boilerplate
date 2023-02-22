@@ -2,7 +2,7 @@ package sessionmanager
 
 type Session struct {
 	Email             string `json:"email"`
-	EmailVerified     bool   `json:"email_verified"`
+	EmailVerified     bool   `json:"emailVerified"`
 	Name              string `json:"name"`
-	PreferredUsername string `json:"preferred_username"`
+	PreferredUsername string `json:"preferredUsername"`
 }

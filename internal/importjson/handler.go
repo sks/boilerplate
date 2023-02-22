@@ -6,11 +6,9 @@ import (
 	"io.github.com/sks/services/pkg/httputil"
 )
 
-type Options struct {
-}
+type Options struct{}
 
-type Handler struct {
-}
+type Handler struct{}
 
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	httputil.EncodeResponse(r.Context(), w, ImportmapOutput{

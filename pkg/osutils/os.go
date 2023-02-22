@@ -7,5 +7,6 @@ func GetOrDefault(env, defaultVal string) string {
 	if ok {
 		return val
 	}
+
 	return defaultVal
 }
