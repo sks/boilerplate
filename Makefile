@@ -25,7 +25,10 @@ docker_push/%:
 	docker push ${DOCKERHUB_USERNAME}/$*:${DOCKER_TAG}
 
 helm/install/%:
-	helm upgrade --install $* ./cmd/$*/chart
+	helm upgrade --wait --install $* ./cmd/$*/chart
+
+helm/debug/%:
+	helm upgrade --debug --dry-run --install $* ./cmd/$*/chart
 
 go/fakes:
 	go generate ./...

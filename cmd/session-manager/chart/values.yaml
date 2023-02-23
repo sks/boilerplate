@@ -8,7 +8,7 @@ image:
   repository: sabithksme/session-manager
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "7f2e472"
+  tag: "1cde36e"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -79,7 +79,17 @@ tolerations: []
 affinity: {}
 
 env:
-  OIDC_REDIRECT_URL: "http://kubernetes.docker.internal/session/auth/callback"
-  CLIENT_SECRET: "some_secrets"
-  JAEGER_TRACES: "http://jaeger-all-in-one:14268/api/traces"
-  DEBUG: "true"
+  - name: "OIDC_REDIRECT_URL"
+    value: "http://kubernetes.docker.internal/session/auth/callback"
+  - name: "CLIENT_SECRET"
+    value: "some_secrets"
+  - name: "JAEGER_TRACES"
+    value: "http://jaeger-all-in-one:14268/api/traces"
+  - name: "DEBUG"
+    value: "true"  
+  - name: "DB_CONNECTION_STRING"
+    valueFrom: 
+      secretKeyRef:
+        name: "db-connection-str"
+        key: "session_mgr"
+        optional: false

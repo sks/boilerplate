@@ -8,11 +8,13 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/google/uuid"
+	"golang.org/x/exp/slog"
 	"golang.org/x/oauth2"
 
 	"io.github.com/sks/services/pkg/berror"
 	"io.github.com/sks/services/pkg/constants"
 	"io.github.com/sks/services/pkg/httputil"
+	"io.github.com/sks/services/pkg/logging"
 )
 
 type Option struct {
@@ -38,6 +40,7 @@ type Handler struct {
 func NewSessionManagerHandler(ctx context.Context, opts Option, sessionRepository IRepo) (Handler, error) {
 	provider, err := oidc.NewProvider(ctx, opts.IssuerURL)
 	if err != nil {
+		logging.GetLogger(ctx).Warn("error validating issuer url", slog.String("issuerURL", opts.IssuerURL))
 		return Handler{}, fmt.Errorf("error validating the issuer url: %w", err)
 	}
 	return Handler{

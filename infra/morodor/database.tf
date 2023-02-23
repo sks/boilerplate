@@ -31,6 +31,17 @@ resource "kubernetes_secret" "db_init_script" {
   }
 }
 
+resource "kubernetes_secret" "db_connection_str" {
+  metadata {
+    name      = "db-connection-str"
+    namespace = var.namespace
+  }
+
+  data = {
+    "session_mgr" = format("host=database-postgresql-ha-postgresql user=session_mgr password=%s dbname=session_mgr port=5432 sslmode=disable", random_string.session_manager_db_pwd.result),
+  }
+}
+
 resource "helm_release" "database" {
   depends_on = [
     kubernetes_namespace.namespace,
