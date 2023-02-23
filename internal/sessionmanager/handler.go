@@ -4,11 +4,14 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 
 	"io.github.com/sks/services/pkg/berror"
+	"io.github.com/sks/services/pkg/constants"
 	"io.github.com/sks/services/pkg/httputil"
 )
 
@@ -29,9 +32,10 @@ type Handler struct {
 	opts     Option
 	provider *oidc.Provider
 	verifier *oidc.IDTokenVerifier
+	repo     IRepo
 }
 
-func NewSessionManagerHandler(ctx context.Context, opts Option) (Handler, error) {
+func NewSessionManagerHandler(ctx context.Context, opts Option, sessionRepository IRepo) (Handler, error) {
 	provider, err := oidc.NewProvider(ctx, opts.IssuerURL)
 	if err != nil {
 		return Handler{}, fmt.Errorf("error validating the issuer url: %w", err)
@@ -47,8 +51,34 @@ func NewSessionManagerHandler(ctx context.Context, opts Option) (Handler, error)
 
 func (h Handler) Login(w http.ResponseWriter, req *http.Request) {
 	state := req.URL.Query().Get("state")
-	redirectURL := h.oauth2Config([]string{"openid", "profile", "email"}).AuthCodeURL(state)
+	redirectURL := h.oauth2Config([]string{"openid", "profile", "email", "federated:id", "email_verified", "name"}).AuthCodeURL(state)
 	http.Redirect(w, req, redirectURL, http.StatusTemporaryRedirect)
+}
+
+func (h Handler) getSessionID(authHeader string) (string, error) {
+	val := strings.Split(authHeader, " ")
+	if len(val) > 1 {
+		return val[1], nil
+	}
+	return "", berror.New("invalid auth header", "INVALID_AUTH_HEADER", http.StatusUnauthorized)
+
+}
+
+func (h Handler) Verify(w http.ResponseWriter, req *http.Request) {
+	sessionID, err := h.getSessionID(req.Header.Get(constants.Authorization))
+	if err != nil {
+		httputil.WriteError(req.Context(), w, err)
+		return
+	}
+	session := Session{}
+	err = h.repo.DB(req.Context()).First(&session, sessionID).Error
+	if err != nil {
+		httputil.WriteError(req.Context(), w, err)
+		return
+	}
+	w.Header().Add("x-user-email", session.Email)
+	w.Header().Add("x-user-username", session.PreferredUsername)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h Handler) Callback(w http.ResponseWriter, req *http.Request) {
@@ -69,11 +99,19 @@ func (h Handler) Callback(w http.ResponseWriter, req *http.Request) {
 		httputil.WriteError(req.Context(), w, err)
 		return
 	}
-	_, err = h.verifyToken(req.Context(), token)
+	session, err := h.verifyToken(req.Context(), token)
 	if err != nil {
 		httputil.WriteError(req.Context(), w, err)
 		return
 	}
+	session.ID, _ = uuid.NewUUID()
+	err = h.repo.DB(req.Context()).Save(session).Error
+	if err != nil {
+		httputil.WriteError(req.Context(), w, err)
+		return
+	}
+	w.Header().Add("x-session-id", session.ID.String())
+	http.Redirect(w, req, "/", http.StatusTemporaryRedirect)
 }
 
 func (h Handler) verifyToken(ctx context.Context, token *oauth2.Token) (Session, error) {

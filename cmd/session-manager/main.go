@@ -14,6 +14,7 @@ import (
 	"io.github.com/sks/services/pkg/constants"
 	"io.github.com/sks/services/pkg/db"
 	"io.github.com/sks/services/pkg/logging"
+	"io.github.com/sks/services/pkg/repository"
 	"io.github.com/sks/services/pkg/serverutils"
 	"io.github.com/sks/services/pkg/serverutils/handlers"
 	"io.github.com/sks/services/pkg/services"
@@ -59,11 +60,16 @@ func bootstrap(ctx context.Context, config appConfig) error {
 		return nil
 	})
 
-	sessionHandler, err := sessionmanager.NewSessionManagerHandler(ctx, config.SessionManagerOption)
+	baseRepo := repository.NewBase(db)
+	errGroup, ectx := errgroup.WithContext(ctx)
+	sessionRepo := sessionmanager.NewSessionRepo(baseRepo)
+	errGroup.Go(func() error {
+		return sessionRepo.Migrate(ectx)
+	})
+	sessionHandler, err := sessionmanager.NewSessionManagerHandler(ctx, config.SessionManagerOption, sessionRepo)
 	if err != nil {
 		return fmt.Errorf("error creating session manager: %w", err)
 	}
-	errGroup, ectx := errgroup.WithContext(ctx)
 	errGroup.Go(func() error {
 		return sessionHandler.CreateClientInDex(ectx)
 	})
@@ -73,6 +79,7 @@ func bootstrap(ctx context.Context, config appConfig) error {
 		defer logger.Info("stopped http server")
 		serverMux.Handle(constants.HealthCheckEndpoint, svchealth.NewHandler())
 		serverMux.HandleFunc("/auth/callback", sessionHandler.Callback)
+		serverMux.HandleFunc("/auth/verify", sessionHandler.Verify)
 		serverMux.HandleFunc("/auth/login", sessionHandler.Login)
 		server := serverutils.NewServer(ectx, config.HTTPServer, handlers.Default(serverMux))
 		return serverutils.KeepServerRunning(ectx, server)

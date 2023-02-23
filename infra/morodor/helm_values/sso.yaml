@@ -8,9 +8,16 @@ ingress:
       paths:
         - path: /sso
           pathType: Prefix
-  
+
+telemetry:
+  http: 0.0.0.0:5558
+
 grpc:
   enabled: true
+
+enablePasswordDB: true
+oauth2:
+  skipApprovalScreen: true
 
 config:
   issuer: http://${domain}/sso

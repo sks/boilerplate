@@ -12,6 +12,7 @@ import (
 	"io.github.com/sks/services/internal/importjson"
 	"io.github.com/sks/services/pkg/logging"
 	"io.github.com/sks/services/pkg/serverutils"
+	"io.github.com/sks/services/pkg/serverutils/handlers"
 	"io.github.com/sks/services/pkg/services"
 )
 
@@ -44,7 +45,7 @@ func bootstrap(ctx context.Context, config appConfig) error {
 		logger.Info("starting http server", slog.String("port", config.HTTPServer.Port))
 		serverMux := http.NewServeMux()
 		serverMux.Handle("/importmap.json", importjson.NewHandler(config.Options))
-		server := serverutils.NewServer(ectx, config.HTTPServer, serverMux)
+		server := serverutils.NewServer(ectx, config.HTTPServer, handlers.Default(serverMux))
 		return serverutils.KeepServerRunning(ectx, server)
 	})
 

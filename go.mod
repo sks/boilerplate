@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/coreos/go-oidc/v3 v3.5.0
 	github.com/dexidp/dex/api/v2 v2.1.0
+	github.com/google/uuid v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.6.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.39.0

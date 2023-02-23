@@ -25,8 +25,9 @@ resource "kubernetes_namespace" "namespace" {
 
 
 resource "helm_release" "dex_release" {
-  name      = "dex-idp"
-  namespace = var.namespace
+  name          = "dex-idp"
+  namespace     = var.namespace
+  wait_for_jobs = true
 
   repository = "https://charts.dexidp.io"
   chart      = "dex"
@@ -56,6 +57,7 @@ resource "helm_release" "nginx_controller" {
   depends_on = [
     kubernetes_namespace.namespace,
   ]
+  wait_for_jobs = true
 
   repository = "https://helm.nginx.com/stable"
   chart      = "nginx-ingress"
@@ -87,8 +89,9 @@ resource "kubernetes_ingress_v1" "master_ingress" {
 }
 
 resource "helm_release" "jaeger" {
-  name      = "jaeger-all-in-one"
-  namespace = var.namespace
+  name          = "jaeger-all-in-one"
+  namespace     = var.namespace
+  wait_for_jobs = true
 
   depends_on = [
     kubernetes_namespace.namespace
@@ -105,25 +108,38 @@ resource "helm_release" "jaeger" {
   ]
 }
 
-resource "random_string" "session_manager_db_pwd" {
+
+resource "random_string" "database_admin_pwd" {
   length  = 32
-  special = true
+  special = false
 }
 
-resource "helm_release" "session-manager" {
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "postgresql"
-  namespace  = var.namespace
+resource "random_string" "session_manager_db_pwd" {
+  length  = 32
+  special = false
+}
+
+resource "helm_release" "database" {
+  depends_on = [
+    kubernetes_namespace.namespace
+  ]
+  repository    = "https://charts.bitnami.com/bitnami"
+  chart         = "postgresql-ha"
+  namespace     = var.namespace
+  wait_for_jobs = true
+  reuse_values  = true
+  reset_values  = true
 
   count   = (var.profile == "local") ? 1 : 0
-  name    = "session-manager-db"
+  name    = "database"
   replace = true
 
   values = [
-    templatefile("helm_values/session_manager_db.yaml", {
-      password = random_string.session_manager_db_pwd.result
-      username = "session-manager"
-      database = "session-manager"
+    templatefile("helm_values/database.yaml", {
+      password = random_string.database_admin_pwd.result
+      databases = {
+        "session_mgr" : random_string.session_manager_db_pwd.result,
+      }
     })
   ]
 }

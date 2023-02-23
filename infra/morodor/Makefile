@@ -17,10 +17,16 @@ apply: plan
 	terraform apply --var-file=${SECRETS_FILE}
 
 apply/target/%:
-	terraform apply -target=$* --var-file=${SECRETS_FILE}
+	terraform apply --auto-approve -target=$* --var-file=${SECRETS_FILE}
+
+plan/target/%:
+	terraform plan  -target=$* --var-file=${SECRETS_FILE}
 
 apply/y: plan
 	terraform apply --auto-approve --var-file=${SECRETS_FILE}
 
 destroy:
 	terraform destroy --var-file=${SECRETS_FILE}
+
+destroy/y:
+	terraform destroy --auto-approve --var-file=${SECRETS_FILE}
