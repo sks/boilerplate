@@ -5,8 +5,4 @@ metrics:
 postgresql:
   password: ${password}
   repmgrPassword: repo_${password}
-  initdbScripts:
-    01_create_additional_database.sql: |
-      %{ for db_name, db_password in databases ~}CREATE USER ${db_name} PASSWORD '${db_password}';
-      CREATE DATABASE ${db_name} OWNER ${db_name};
-      %{ endfor ~}
+  initdbScriptsSecret: ${initdbScriptsSecret}

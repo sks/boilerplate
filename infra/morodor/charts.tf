@@ -35,20 +35,26 @@ resource "helm_release" "dex_release" {
 
   depends_on = [
     helm_release.nginx_controller,
-    kubernetes_namespace.namespace
+    kubernetes_namespace.namespace,
+    helm_release.database
   ]
 
   values = [
     templatefile("helm_values/sso.yaml", {
       domain = var.domain
       creds  = var.creds
+      pg = {
+        host     = "database-postgresql-ha-postgresql"
+        port     = "5432"
+        database = "sso"
+        user     = "sso"
+        password = random_string.sso_db_pwd.result
+        ssl = {
+          mode = "disable"
+        }
+      }
     })
   ]
-
-  set {
-    name  = "config.storage.type"
-    value = "memory"
-  }
 }
 
 resource "helm_release" "nginx_controller" {
@@ -107,40 +113,3 @@ resource "helm_release" "jaeger" {
     })
   ]
 }
-
-
-resource "random_string" "database_admin_pwd" {
-  length  = 32
-  special = false
-}
-
-resource "random_string" "session_manager_db_pwd" {
-  length  = 32
-  special = false
-}
-
-resource "helm_release" "database" {
-  depends_on = [
-    kubernetes_namespace.namespace
-  ]
-  repository    = "https://charts.bitnami.com/bitnami"
-  chart         = "postgresql-ha"
-  namespace     = var.namespace
-  wait_for_jobs = true
-  reuse_values  = true
-  reset_values  = true
-
-  count   = (var.profile == "local") ? 1 : 0
-  name    = "database"
-  replace = true
-
-  values = [
-    templatefile("helm_values/database.yaml", {
-      password = random_string.database_admin_pwd.result
-      databases = {
-        "session_mgr" : random_string.session_manager_db_pwd.result,
-      }
-    })
-  ]
-}
-

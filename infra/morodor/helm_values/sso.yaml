@@ -23,6 +23,16 @@ config:
   issuer: http://${domain}/sso
   logger:
     format: json
+  storage:
+    type: postgres
+    config:
+      host: ${pg.host}
+      port: ${pg.port}
+      database: ${pg.database}
+      user: ${pg.user}
+      password: ${pg.password}
+      ssl:
+        mode: ${pg.ssl.mode}
   connectors:
     - type: github
       id: github
