@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/google/uuid"
@@ -18,6 +19,9 @@ import (
 )
 
 type Option struct {
+	Session struct {
+		Expiry time.Duration `envconfig:"SESSION_EXPIRY" default:"2h"`
+	}
 	Client struct {
 		ID          string `envconfig:"CLIENT_ID" default:"session-manager"`
 		Secret      string `envconfig:"CLIENT_SECRET"`
@@ -85,6 +89,21 @@ func (h Handler) Verify(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+func (h Handler) Me(w http.ResponseWriter, req *http.Request) {
+	sessionID, err := h.getSessionID(req.Header.Get(constants.Authorization))
+	if err != nil {
+		httputil.WriteError(req.Context(), w, err)
+		return
+	}
+	session := Session{}
+	err = h.repo.DB(req.Context()).First(&session, sessionID).Error
+	if err != nil {
+		httputil.WriteError(req.Context(), w, err)
+		return
+	}
+	httputil.EncodeResponse(req.Context(), w, session)
+}
+
 func (h Handler) Callback(w http.ResponseWriter, req *http.Request) {
 	// Authorization redirect callback from OAuth2 auth flow.
 	if errMsg := req.FormValue("error"); errMsg != "" {
@@ -115,6 +134,16 @@ func (h Handler) Callback(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	w.Header().Add("x-session-id", session.ID.String())
+	http.SetCookie(w, &http.Cookie{
+		Name:     "x-session-cookie",
+		Value:    session.ID.String(),
+		Path:     "/",
+		Domain:   req.URL.Host,
+		Expires:  time.Now().Add(h.opts.Session.Expiry),
+		Secure:   req.URL.Scheme == "https",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	})
 	http.Redirect(w, req, "/", http.StatusTemporaryRedirect)
 }
 

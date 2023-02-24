@@ -82,6 +82,7 @@ func bootstrap(ctx context.Context, config appConfig) error {
 		serverMux.Handle(constants.HealthCheckEndpoint, svchealth.NewHandler())
 		serverMux.HandleFunc("/auth/callback", sessionHandler.Callback)
 		serverMux.HandleFunc("/auth/verify", sessionHandler.Verify)
+		serverMux.HandleFunc("/auth/me", sessionHandler.Me)
 		serverMux.HandleFunc("/auth/login", sessionHandler.Login)
 		server := serverutils.NewServer(ectx, config.HTTPServer, handlers.Default(serverMux))
 		return serverutils.KeepServerRunning(ectx, server)
