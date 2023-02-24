@@ -8,7 +8,7 @@ image:
   repository: sabithksme/session-manager
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1cde36e"
+  tag: "0bd8aa1-dirty"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -38,7 +38,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 3001
+  port: 3000
 
 ingress:
   enabled: true

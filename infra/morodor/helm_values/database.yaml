@@ -6,3 +6,7 @@ postgresql:
   password: ${password}
   repmgrPassword: repo_${password}
   initdbScriptsSecret: ${initdbScriptsSecret}
+
+
+pgpool:
+  customUsersSecret: pool-passwd

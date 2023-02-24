@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"golang.org/x/exp/slog"
@@ -16,7 +17,7 @@ import (
 )
 
 func Init(ctx context.Context) (context.Context, func()) {
-	ctx, cancel := signal.NotifyContext(ctx, os.Kill, os.Interrupt)
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGINT)
 	startTime := time.Now()
 	logging.GetLogger(ctx).Info("starting the server")
 

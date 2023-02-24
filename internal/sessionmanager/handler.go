@@ -49,12 +49,13 @@ func NewSessionManagerHandler(ctx context.Context, opts Option, sessionRepositor
 		verifier: provider.Verifier(&oidc.Config{
 			ClientID: opts.Client.ID,
 		}),
+		repo: sessionRepository,
 	}, nil
 }
 
 func (h Handler) Login(w http.ResponseWriter, req *http.Request) {
 	state := req.URL.Query().Get("state")
-	redirectURL := h.oauth2Config([]string{"openid", "profile", "email", "federated:id", "email_verified", "name"}).AuthCodeURL(state)
+	redirectURL := h.oauth2Config([]string{"openid", "profile", "email", "federated:id", "groups"}).AuthCodeURL(state)
 	http.Redirect(w, req, redirectURL, http.StatusTemporaryRedirect)
 }
 

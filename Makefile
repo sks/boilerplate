@@ -12,8 +12,6 @@ build/%:
 		-ldflags="-X 'io.github.com/sks/services/pkg/constants.Version=${DOCKER_TAG}'" \
 		-o ./${BUILD_DIR}/$* ./cmd/$*/
 
-build: build/mf-importjson
-
 dockerize/%:
 	docker build \
 		--build-arg GIT_TAG=${DOCKER_TAG} \
@@ -29,6 +27,11 @@ helm/install/%:
 
 helm/debug/%:
 	helm upgrade --debug --dry-run --install $* ./cmd/$*/chart
+
+tryout/%:
+	@$(MAKE) dockerize/$*
+	kubectl delete pod -l app.kubernetes.io/name=$*
+	@$(MAKE) helm/install/$*
 
 go/fakes:
 	go generate ./...

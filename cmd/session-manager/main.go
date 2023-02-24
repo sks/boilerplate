@@ -35,6 +35,8 @@ func main() {
 		logger.Error("error processing env config", err)
 		os.Exit(1)
 	}
+	defer logger.Info("server shutting down")
+
 	ctx, cancel := services.Init(context.Background())
 	defer cancel()
 	err = bootstrap(ctx, config)
@@ -74,7 +76,7 @@ func bootstrap(ctx context.Context, config appConfig) error {
 		return sessionHandler.CreateClientInDex(ectx)
 	})
 	errGroup.Go(func() error {
-		logger.Info("starting http server", slog.String("port", config.HTTPServer.Port))
+		defer logger.Info("returning from http.server")
 		serverMux := http.NewServeMux()
 		defer logger.Info("stopped http server")
 		serverMux.Handle(constants.HealthCheckEndpoint, svchealth.NewHandler())

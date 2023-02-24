@@ -7,6 +7,7 @@ import (
 
 	"golang.org/x/exp/slog"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/utils"
 
 	"io.github.com/sks/services/pkg/logging"
 )
@@ -38,6 +39,7 @@ func (l *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql 
 		slog.String("sql", sql),
 		slog.Int64("rowsAffected", rowsAffected),
 		slog.Duration("duration", time.Since(begin)),
+		slog.String("file", utils.FileWithLineNum()),
 	}
 	if err != nil {
 		logAttrs = append(logAttrs, slog.String(slog.ErrorKey, err.Error()))

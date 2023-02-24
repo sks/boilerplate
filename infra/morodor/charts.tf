@@ -44,7 +44,7 @@ resource "helm_release" "dex_release" {
       domain = var.domain
       creds  = var.creds
       pg = {
-        host     = "database-postgresql-ha-postgresql"
+        host     = "database-postgresql-ha-pgpool"
         port     = "5432"
         database = "sso"
         user     = "sso"

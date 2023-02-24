@@ -20,4 +20,4 @@ FROM alpine
 
 COPY --from=builder /bin/session-manager /bin/session-manager
 
-ENTRYPOINT [ "/bin/session-manager" ]
+CMD [ "/bin/session-manager" ]
