@@ -6,11 +6,11 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/sks/boilerplate/pkg/logging"
 	"golang.org/x/exp/slog"
-	"io.github.com/sks/services/pkg/logging"
 
-	_ "io.github.com/sks/services/pkg/metrics"
-	_ "io.github.com/sks/services/pkg/tracer"
+	_ "github.com/sks/boilerplate/pkg/metrics"
+	_ "github.com/sks/boilerplate/pkg/tracer"
 )
 
 func Init(ctx context.Context) (context.Context, func()) {

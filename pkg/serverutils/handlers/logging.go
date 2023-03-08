@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/sks/boilerplate/pkg/logging"
 	"golang.org/x/exp/slog"
-	"io.github.com/sks/services/pkg/logging"
 )
 
 type statusAwareResponseWriter struct {

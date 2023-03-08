@@ -6,8 +6,8 @@ import (
 
 	"go.opentelemetry.io/otel"
 
-	"io.github.com/sks/services/pkg/logging"
-	"io.github.com/sks/services/pkg/osutils"
+	"github.com/sks/boilerplate/pkg/logging"
+	"github.com/sks/boilerplate/pkg/osutils"
 )
 
 func init() {

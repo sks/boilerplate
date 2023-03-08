@@ -7,13 +7,13 @@ import (
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
+	"github.com/sks/boilerplate/internal/sessionmanager"
+	"github.com/sks/boilerplate/pkg/logging"
+	"github.com/sks/boilerplate/pkg/serverutils"
+	"github.com/sks/boilerplate/pkg/serverutils/handlers"
+	"github.com/sks/boilerplate/pkg/services"
 	"golang.org/x/exp/slog"
 	"golang.org/x/sync/errgroup"
-	"io.github.com/sks/services/internal/sessionmanager"
-	"io.github.com/sks/services/pkg/logging"
-	"io.github.com/sks/services/pkg/serverutils"
-	"io.github.com/sks/services/pkg/serverutils/handlers"
-	"io.github.com/sks/services/pkg/services"
 )
 
 type appConfig struct {

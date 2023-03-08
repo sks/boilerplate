@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"io.github.com/sks/services/pkg/logging"
+	"github.com/sks/boilerplate/pkg/logging"
 )
 
 func RecoveryHandler(next http.Handler) http.Handler {

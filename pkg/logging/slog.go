@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"io.github.com/sks/services/pkg/constants"
+	"github.com/sks/boilerplate/pkg/constants"
 
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/exp/slog"

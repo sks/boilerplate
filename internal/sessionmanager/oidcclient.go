@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/dexidp/dex/api/v2"
+	"github.com/sks/boilerplate/pkg/constants"
+	"github.com/sks/boilerplate/pkg/logging"
 	"golang.org/x/exp/slog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
-	"io.github.com/sks/services/pkg/constants"
-	"io.github.com/sks/services/pkg/logging"
 )
 
 func (h Handler) newDexClient(hostAndPort, caPath string) (api.DexClient, *grpc.ClientConn, error) {

@@ -8,8 +8,8 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 
-	"io.github.com/sks/services/pkg/berror"
-	"io.github.com/sks/services/pkg/httputil"
+	"github.com/sks/boilerplate/pkg/berror"
+	"github.com/sks/boilerplate/pkg/httputil"
 )
 
 type Option struct {

@@ -3,7 +3,7 @@ package importjson
 import (
 	"net/http"
 
-	"io.github.com/sks/services/pkg/httputil"
+	"github.com/sks/boilerplate/pkg/httputil"
 )
 
 type Options struct {

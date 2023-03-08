@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"io.github.com/sks/services/pkg/logging"
+	"github.com/sks/boilerplate/pkg/logging"
 )
 
 func KeepServerRunning(ctx context.Context, server *http.Server) error {

@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"io.github.com/sks/services/pkg/berror"
-	"io.github.com/sks/services/pkg/logging"
-	"io.github.com/sks/services/pkg/metrics"
+	"github.com/sks/boilerplate/pkg/berror"
+	"github.com/sks/boilerplate/pkg/logging"
+	"github.com/sks/boilerplate/pkg/metrics"
 )
 
 func EncodeResponse(ctx context.Context, w http.ResponseWriter, val any) {

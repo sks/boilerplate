@@ -7,11 +7,11 @@ import (
 	"os"
 	"runtime"
 
-	"io.github.com/sks/services/internal/importjson"
-	"io.github.com/sks/services/pkg/logging"
-	"io.github.com/sks/services/pkg/serverutils"
-	"io.github.com/sks/services/pkg/serverutils/handlers"
-	"io.github.com/sks/services/pkg/services"
+	"github.com/sks/boilerplate/internal/importjson"
+	"github.com/sks/boilerplate/pkg/logging"
+	"github.com/sks/boilerplate/pkg/serverutils"
+	"github.com/sks/boilerplate/pkg/serverutils/handlers"
+	"github.com/sks/boilerplate/pkg/services"
 
 	"github.com/kelseyhightower/envconfig"
 	"golang.org/x/exp/slog"

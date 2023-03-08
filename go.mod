@@ -1,4 +1,4 @@
-module io.github.com/sks/services
+module github.com/sks/boilerplate
 
 go 1.19
 

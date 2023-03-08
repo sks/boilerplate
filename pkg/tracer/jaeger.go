@@ -1,12 +1,12 @@
 package tracer
 
 import (
+	"github.com/sks/boilerplate/pkg/constants"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
-	"io.github.com/sks/services/pkg/constants"
 )
 
 // tracerProvider returns an OpenTelemetry TracerProvider configured to use
