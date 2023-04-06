@@ -23,7 +23,7 @@ func init() {
 }
 
 func GetLogger(ctx context.Context) *slog.Logger {
-	logger := mylogger.WithContext(ctx)
+	logger := mylogger
 	spanContext := trace.SpanContextFromContext(ctx)
 	if spanContext.HasSpanID() {
 		logger = logger.With(slog.String("span", spanContext.SpanID().String()))
