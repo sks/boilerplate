@@ -23,7 +23,7 @@ func Log(next http.Handler) http.Handler {
 		newStatusAwareResponseWriter := &statusAwareResponseWriter{w, 0}
 		defer func(startTime time.Time) {
 			logging.GetLogger(r.Context()).Debug("request handled",
-				slog.Duration("duration", time.Since(startTime)),
+				slog.Float64("duration", time.Since(startTime).Seconds()),
 				slog.Int("status", newStatusAwareResponseWriter.status),
 				slog.String("path", r.URL.Path))
 		}(time.Now())
