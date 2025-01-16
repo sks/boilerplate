@@ -1,0 +1,7 @@
+{
+  "module": {
+    "stackgen_24824277-b648-4d9e-9d1a-e344ede0736c": {
+      "source": "./modules/custom_terraform_aws_vpc"
+    }
+  }
+}
