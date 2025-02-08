@@ -1,0 +1,17 @@
+{
+  "module": {
+    "stackgen_155040e0-79e8-4a4d-9ff4-b32709492d58": {
+      "include_lowercase": true,
+      "include_numbers": true,
+      "include_special": true,
+      "include_uppercase": true,
+      "min_lowercase": 0,
+      "min_numeric": 0,
+      "min_special": 0,
+      "min_uppercase": 0,
+      "override_special": "!#$%\u0026*()-_=+[]{}\u003c\u003e:?",
+      "password_length": 16,
+      "source": "./modules/general_password"
+    }
+  }
+}
