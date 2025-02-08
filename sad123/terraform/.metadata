@@ -1,0 +1,7 @@
+{
+  "app_stack_name": "testt _ PLAT-304",
+  "iac_type": "Terraform",
+  "provider": "aws",
+  "multi_env": false,
+  "exporter": "terraform"
+}

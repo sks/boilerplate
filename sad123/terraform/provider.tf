@@ -6,7 +6,16 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+
+    awscc = { // AWS Cloud Control
+      source  = "hashicorp/awscc"
+      version = "~> 1.0"
+    }
   }
+}
+
+provider "awscc" {
+  region = var.region
 }
 
 provider "aws" {
