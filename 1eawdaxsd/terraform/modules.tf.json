@@ -1,0 +1,16 @@
+{
+  "module": {
+    "stackgen_52d9d3e9-e532-4b71-87c0-919c215ab1fe": {
+      "block_public_access": true,
+      "bucket_name": "${var.bucket_name}",
+      "bucket_policy": "",
+      "enable_versioning": true,
+      "enable_website_configuration": false,
+      "source": "./modules/aws_s3",
+      "sse_algorithm": "aws:kms",
+      "tags": {},
+      "website_error_document": "404.html",
+      "website_index_document": "index.html"
+    }
+  }
+}
