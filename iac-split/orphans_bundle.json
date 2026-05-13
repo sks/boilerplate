@@ -1,0 +1,16 @@
+{
+  "metadata": {"total_orphaned_resources": 245, "module_count": 11, "module_prefix": "aios"},
+  "modules": [
+    {"name": "aios-001", "resource_count": 23},
+    {"name": "aios-002", "resource_count": 23},
+    {"name": "aios-003", "resource_count": 23},
+    {"name": "aios-004", "resource_count": 23},
+    {"name": "aios-005", "resource_count": 22},
+    {"name": "aios-006", "resource_count": 22},
+    {"name": "aios-007", "resource_count": 22},
+    {"name": "aios-008", "resource_count": 22},
+    {"name": "aios-009", "resource_count": 22},
+    {"name": "aios-010", "resource_count": 22},
+    {"name": "aios-011", "resource_count": 21}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "generated_at": "2026-05-13T14:02:56-07:00",
+    "total_groups": 1121,
+    "total_resources": 12726,
+    "max_resources_per_group": 80,
+    "orphaned_resources": 245,
+    "orphan_modules": 11,
+    "aws_resource_types": 77,
+    "source": "monolithic terraform.tfstate"
+  },
+  "group_prefix": "conn-aws",
+  "group_range": {"first": "conn-aws-001", "last": "conn-aws-1121"},
+  "orphan_prefix": "aios",
+  "strategy": "connectivity-capped grouping with 80-resource max",
+  "import_blocks": true,
+  "lifecycle_ignore_changes": true
+}
